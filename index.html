@@ -33,115 +33,28 @@
             font-size: 14px;
         }
 
-        /* Import Section */
-        .import-section {
-            max-width: 800px;
-            margin: 0 auto 30px;
-            background: #2d2d44;
-            padding: 20px;
-            border-radius: 12px;
-        }
-
-        .import-section h3 {
-            color: #00d4ff;
-            margin-bottom: 15px;
-            font-size: 16px;
-        }
-
-        .import-row {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
-            flex-wrap: wrap;
-            align-items: center;
-        }
-
-        .import-row label {
-            min-width: 120px;
-            font-size: 14px;
-        }
-
-        .import-row input[type="file"] {
-            flex: 1;
-            min-width: 200px;
-        }
-
-        .file-input-wrapper {
-            position: relative;
-            flex: 1;
-            min-width: 200px;
-        }
-
-        .file-input-wrapper input[type="file"] {
-            width: 100%;
-            padding: 10px;
-            background: #1a1a2e;
-            border: 1px solid #444;
-            border-radius: 6px;
-            color: #fff;
-            cursor: pointer;
-        }
-
-        .file-input-wrapper input[type="file"]::-webkit-file-upload-button {
-            background: #00d4ff;
-            color: #000;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 4px;
-            cursor: pointer;
-            margin-right: 10px;
-        }
-
-        .import-status {
-            font-size: 12px;
-            padding: 5px 10px;
-            border-radius: 4px;
-            display: inline-block;
-        }
-
-        .import-status.success {
-            background: #00ff8833;
-            color: #00ff88;
-        }
-
-        .import-status.error {
-            background: #ff008833;
-            color: #ff0088;
-        }
-
-        .import-help {
-            font-size: 12px;
-            color: #888;
-            margin-top: 10px;
-            padding: 10px;
-            background: #1a1a2e;
-            border-radius: 6px;
-        }
-
-        .import-help code {
-            background: #3a3a50;
-            padding: 2px 6px;
-            border-radius: 4px;
-            color: #00d4ff;
-        }
-
         .layer-tabs {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             justify-content: center;
             margin-bottom: 20px;
             flex-wrap: wrap;
+            max-width: 100%;
+            overflow-x: auto;
+            padding: 5px 0;
         }
 
         .layer-tab {
-            padding: 10px 20px;
+            padding: 8px 16px;
             background: #2d2d44;
             border: 2px solid #444;
             border-radius: 8px;
             color: #fff;
             cursor: pointer;
             transition: all 0.2s;
-            font-size: 14px;
+            font-size: 13px;
+            white-space: nowrap;
+            flex-shrink: 0;
         }
 
         .layer-tab:hover {
@@ -158,6 +71,10 @@
             margin-left: 8px;
             color: #ff6b6b;
             font-weight: bold;
+        }
+
+        .layer-tab.active .delete-layer {
+            color: #cc0000;
         }
 
         .keyboard-container {
@@ -354,14 +271,6 @@
             background: #4a4a60;
         }
 
-        .category-title {
-            width: 100%;
-            font-size: 12px;
-            color: #888;
-            margin-top: 10px;
-            margin-bottom: 5px;
-        }
-
         .info-box {
             background: #1a1a2e;
             padding: 15px;
@@ -405,6 +314,135 @@
             display: block;
         }
 
+        /* Settings Panel */
+        .settings-panel {
+            max-width: 800px;
+            margin: 30px auto;
+            background: #2d2d44;
+            padding: 20px;
+            border-radius: 12px;
+        }
+
+        .settings-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            padding: 10px;
+            margin: -10px -10px 0 -10px;
+            border-radius: 12px 12px 0 0;
+        }
+
+        .settings-header:hover {
+            background: #3a3a50;
+        }
+
+        .settings-header h3 {
+            color: #00d4ff;
+            font-size: 16px;
+            margin: 0;
+        }
+
+        .settings-toggle {
+            color: #888;
+            font-size: 20px;
+            transition: transform 0.3s;
+        }
+
+        .settings-toggle.open {
+            transform: rotate(180deg);
+        }
+
+        .settings-content {
+            display: none;
+            padding-top: 20px;
+        }
+
+        .settings-content.open {
+            display: block;
+        }
+
+        .import-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .import-row label {
+            min-width: 120px;
+            font-size: 14px;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .file-input-wrapper input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            background: #1a1a2e;
+            border: 1px solid #444;
+            border-radius: 6px;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .file-input-wrapper input[type="file"]::-webkit-file-upload-button {
+            background: #00d4ff;
+            color: #000;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+
+        .import-status {
+            font-size: 12px;
+            padding: 5px 10px;
+            border-radius: 4px;
+            display: inline-block;
+        }
+
+        .import-status.success {
+            background: #00ff8833;
+            color: #00ff88;
+        }
+
+        .import-status.error {
+            background: #ff008833;
+            color: #ff0088;
+        }
+
+        .import-help {
+            font-size: 12px;
+            color: #888;
+            margin-top: 10px;
+            padding: 10px;
+            background: #1a1a2e;
+            border-radius: 6px;
+        }
+
+        .import-help code {
+            background: #3a3a50;
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: #00d4ff;
+        }
+
+        .layer-count-badge {
+            background: #00d4ff;
+            color: #000;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 11px;
+            margin-left: 10px;
+        }
+
         @media (max-width: 768px) {
             .keyboard {
                 transform: scale(0.6);
@@ -428,42 +466,14 @@
 </head>
 <body>
     <h1>⌨️ QMK Keymap Editor</h1>
-    <p class="subtitle">keyboard.json と keymap.c を読み込んで編集</p>
-
-    <!-- Import Section -->
-    <div class="import-section">
-        <h3>📁 ファイル読み込み</h3>
-        
-        <div class="import-row">
-            <label>keyboard.json:</label>
-            <div class="file-input-wrapper">
-                <input type="file" id="keyboardJsonFile" accept=".json" onchange="loadKeyboardJson(this)">
-            </div>
-            <span id="keyboardJsonStatus"></span>
-        </div>
-
-        <div class="import-row">
-            <label>keymap.c:</label>
-            <div class="file-input-wrapper">
-                <input type="file" id="keymapCFile" accept=".c" onchange="loadKeymapC(this)">
-            </div>
-            <span id="keymapCStatus"></span>
-        </div>
-
-        <div class="import-help">
-            💡 <strong>ファイルの場所:</strong><br>
-            GitHub → <code>qmk_firmware/keyboards/[メーカー]/[モデル]/</code><br>
-            例: <code>keyboards/keychron/q1_he_ansi/keyboard.json</code><br>
-            キーマップ: <code>keyboards/keychron/q1_he_ansi/keymaps/default/keymap.c</code>
-        </div>
-    </div>
+    <p class="subtitle">keyboard.json と keymap.c を読み込んで編集（最大10レイヤー対応）</p>
 
     <div class="layer-tabs" id="layerTabs"></div>
 
     <div class="keyboard-container">
         <div class="keyboard" id="keyboard">
             <div class="no-layout">
-                <p>⬆️ keyboard.json を読み込んでください</p>
+                <p>⬇️ 下の「設定」からファイルを読み込んでください</p>
                 <p>または下のサンプルを使用:</p>
                 <button class="btn btn-primary" onclick="loadSampleLayout()" style="margin-top: 10px;">
                     Q1 HE サンプルを読み込む
@@ -590,6 +600,8 @@
                 <button class="keycode-btn" data-kc="MO(1)">MO(1)</button>
                 <button class="keycode-btn" data-kc="MO(2)">MO(2)</button>
                 <button class="keycode-btn" data-kc="MO(3)">MO(3)</button>
+                <button class="keycode-btn" data-kc="MO(4)">MO(4)</button>
+                <button class="keycode-btn" data-kc="MO(5)">MO(5)</button>
                 <button class="keycode-btn" data-kc="TG(1)">TG(1)</button>
                 <button class="keycode-btn" data-kc="TG(2)">TG(2)</button>
                 <button class="keycode-btn" data-kc="TG(3)">TG(3)</button>
@@ -599,6 +611,7 @@
                 <button class="keycode-btn" data-kc="LT(1,KC_SPC)">LT(1,SPC)</button>
                 <button class="keycode-btn" data-kc="LT(2,KC_SPC)">LT(2,SPC)</button>
                 <button class="keycode-btn" data-kc="LT(1,KC_ENT)">LT(1,ENT)</button>
+                <button class="keycode-btn" data-kc="LT(3,KC_TAB)">LT(3,TAB)</button>
                 <button class="keycode-btn" data-kc="OSL(1)">OSL(1)</button>
                 <button class="keycode-btn" data-kc="OSL(2)">OSL(2)</button>
             </div>
@@ -659,14 +672,57 @@
         <button class="btn btn-secondary" onclick="exportJson()">📤 JSON出力</button>
     </div>
 
+    <!-- Settings Panel (moved to bottom) -->
+    <div class="settings-panel">
+        <div class="settings-header" onclick="toggleSettings()">
+            <h3>⚙️ 設定・ファイル読み込み <span class="layer-count-badge" id="layerCountBadge">0 layers</span></h3>
+            <span class="settings-toggle" id="settingsToggle">▼</span>
+        </div>
+        <div class="settings-content" id="settingsContent">
+            <div class="import-row">
+                <label>keyboard.json:</label>
+                <div class="file-input-wrapper">
+                    <input type="file" id="keyboardJsonFile" accept=".json" onchange="loadKeyboardJson(this)">
+                </div>
+                <span id="keyboardJsonStatus"></span>
+            </div>
+
+            <div class="import-row">
+                <label>keymap.c:</label>
+                <div class="file-input-wrapper">
+                    <input type="file" id="keymapCFile" accept=".c" onchange="loadKeymapC(this)">
+                </div>
+                <span id="keymapCStatus"></span>
+            </div>
+
+            <div class="import-help">
+                💡 <strong>ファイルの場所:</strong><br>
+                GitHub → <code>qmk_firmware/keyboards/[メーカー]/[モデル]/</code><br>
+                例: <code>keyboards/keychron/q1_he_ansi/keyboard.json</code><br>
+                キーマップ: <code>keyboards/keychron/q1_he_ansi/keymaps/default/keymap.c</code><br><br>
+                ⚡ <strong>対応:</strong> 最大10レイヤー、<code>_______</code> は <code>KC_TRNS</code> として扱います
+            </div>
+
+            <div class="actions" style="margin-top: 15px;">
+                <button class="btn btn-primary btn-small" onclick="loadSampleLayout()">
+                    🎹 Q1 HE サンプル読込
+                </button>
+                <button class="btn btn-danger btn-small" onclick="clearAll()">
+                    🗑️ 全てクリア
+                </button>
+            </div>
+        </div>
+    </div>
+
     <script>
         // ==================== STATE ====================
-        let layoutData = null;  // keyboard.json から読み込んだレイアウト
-        let layoutName = '';    // LAYOUT_xxx の名前
+        let layoutData = null;
+        let layoutName = '';
         let layers = [];
         let currentLayer = 0;
         let selectedKey = null;
-        const SCALE = 50;  // 1u = 50px
+        const SCALE = 50;
+        const MAX_LAYERS = 10;
 
         // ==================== DISPLAY NAMES ====================
         const KEYCODE_DISPLAY = {
@@ -690,7 +746,7 @@
             'KC_UP': '↑', 'KC_DOWN': '↓', 'KC_LEFT': '←', 'KC_RGHT': '→',
             'KC_HOME': 'Home', 'KC_END': 'End', 'KC_PGUP': 'PgUp', 'KC_PGDN': 'PgDn',
             'KC_INS': 'Ins', 'KC_PSCR': 'PrtSc', 'KC_SCRL': 'ScrLk', 'KC_PAUS': 'Pause',
-            'KC_TRNS': '▽', 'KC_NO': '✕',
+            'KC_TRNS': '▽', 'KC_NO': '✕', '_______': '▽', 'XXXXXXX': '✕',
             'KC_MUTE': '🔇', 'KC_VOLU': '🔊', 'KC_VOLD': '🔉',
             'KC_MPLY': '⏯', 'KC_MNXT': '⏭', 'KC_MPRV': '⏮', 'KC_MSTP': '⏹',
             'KC_BRIU': '🔆', 'KC_BRID': '🔅', 'KC_MCTL': 'MCtl', 'KC_LPAD': 'LPad',
@@ -698,13 +754,31 @@
             'RGB_HUI': 'Hue+', 'RGB_HUD': 'Hue-', 'RGB_SAI': 'Sat+', 'RGB_SAD': 'Sat-',
             'RGB_VAI': 'Val+', 'RGB_VAD': 'Val-',
             'QK_BOOT': 'Boot', 'QK_RBT': 'Reset', 'NK_TOGG': 'NKey',
-            // Numpad
             'KC_NUM': 'Num', 'KC_PSLS': '/', 'KC_PAST': '*', 'KC_PMNS': '-',
             'KC_P7': '7', 'KC_P8': '8', 'KC_P9': '9', 'KC_PPLS': '+',
             'KC_P4': '4', 'KC_P5': '5', 'KC_P6': '6',
             'KC_P1': '1', 'KC_P2': '2', 'KC_P3': '3', 'KC_PENT': '↵',
             'KC_P0': '0', 'KC_PDOT': '.',
         };
+
+        // Aliases to normalize
+        const KEYCODE_ALIASES = {
+            '_______': 'KC_TRNS',
+            'XXXXXXX': 'KC_NO',
+        };
+
+        // ==================== SETTINGS TOGGLE ====================
+        function toggleSettings() {
+            const content = document.getElementById('settingsContent');
+            const toggle = document.getElementById('settingsToggle');
+            content.classList.toggle('open');
+            toggle.classList.toggle('open');
+        }
+
+        function updateLayerBadge() {
+            const badge = document.getElementById('layerCountBadge');
+            badge.textContent = `${layers.length} layer${layers.length !== 1 ? 's' : ''}`;
+        }
 
         // ==================== FILE LOADING ====================
         function loadKeyboardJson(input) {
@@ -719,11 +793,11 @@
                     setStatus('keyboardJsonStatus', 'success', `✓ ${layoutData.length}キー検出`);
                     renderKeyboard();
                     
-                    // Initialize empty layers if none exist
                     if (layers.length === 0) {
                         initializeEmptyLayers();
                     }
                     renderLayerTabs();
+                    updateLayerBadge();
                 } catch (err) {
                     console.error(err);
                     setStatus('keyboardJsonStatus', 'error', '✕ パース失敗');
@@ -733,12 +807,10 @@
         }
 
         function parseKeyboardJson(json) {
-            // QMK keyboard.json の layouts を探す
             let layout = null;
             layoutName = '';
             
             if (json.layouts) {
-                // 最初のレイアウトを使用
                 const layoutNames = Object.keys(json.layouts);
                 if (layoutNames.length > 0) {
                     layoutName = layoutNames[0];
@@ -752,7 +824,6 @@
                 throw new Error('Layout not found in JSON');
             }
 
-            // レイアウトデータを変換
             layoutData = layout.map((key, index) => ({
                 id: `k${index}`,
                 x: key.x,
@@ -775,6 +846,7 @@
                     setStatus('keymapCStatus', 'success', `✓ ${layers.length}レイヤー検出`);
                     renderLayerTabs();
                     renderKeyboard();
+                    updateLayerBadge();
                 } catch (err) {
                     console.error(err);
                     setStatus('keymapCStatus', 'error', '✕ パース失敗: ' + err.message);
@@ -784,54 +856,47 @@
         }
 
         function parseKeymapC(content) {
-            // コメントを除去
+            // Remove comments
             content = content.replace(/\/\*[\s\S]*?\*\//g, '');
             content = content.replace(/\/\/.*$/gm, '');
 
-            // LAYOUT マクロを探す（複数レイヤー対応）
-            const layoutRegex = /\[\s*(\w+)\s*\]\s*=\s*LAYOUT[_\w]*\s*\(([\s\S]*?)\)(?=\s*[,\]])/g;
+            // Find the keymaps array
+            const keymapsMatch = content.match(/keymaps\s*\[\s*\]\s*\[\s*MATRIX_ROWS\s*\]\s*\[\s*MATRIX_COLS\s*\]\s*=\s*\{([\s\S]*)\};/);
+            
+            if (!keymapsMatch) {
+                throw new Error('keymaps配列が見つかりません');
+            }
+
+            const keymapsContent = keymapsMatch[1];
+            const parsedLayers = [];
+
+            // Parse each layer - improved regex to handle up to 10 layers
+            const layerRegex = /\[\s*_?(\w+)\s*\]\s*=\s*LAYOUT[_\w]*\s*\(([\s\S]*?)\)/g;
             
             let match;
-            const parsedLayers = [];
+            let layerIndex = 0;
             
-            while ((match = layoutRegex.exec(content)) !== null) {
+            while ((match = layerRegex.exec(keymapsContent)) !== null && layerIndex < MAX_LAYERS) {
                 const layerName = match[1].replace(/^_/, '');
                 const keysStr = match[2];
                 
-                // キーコードを抽出
-                const keycodes = [];
-                let depth = 0;
-                let current = '';
-                
-                for (const char of keysStr) {
-                    if (char === '(') {
-                        depth++;
-                        current += char;
-                    } else if (char === ')') {
-                        depth--;
-                        current += char;
-                    } else if (char === ',' && depth === 0) {
-                        const trimmed = current.trim();
-                        if (trimmed) keycodes.push(trimmed);
-                        current = '';
-                    } else if (char !== '\n' && char !== '\r') {
-                        current += char;
-                    }
-                }
-                if (current.trim()) {
-                    keycodes.push(current.trim());
-                }
+                // Extract keycodes handling nested parentheses
+                const keycodes = parseKeycodes(keysStr);
 
-                // レイヤーオブジェクトを作成
+                // Create layer object
                 const keys = {};
                 keycodes.forEach((kc, idx) => {
-                    keys[`k${idx}`] = kc;
+                    // Normalize aliases
+                    const normalizedKc = KEYCODE_ALIASES[kc] || kc;
+                    keys[`k${idx}`] = normalizedKc;
                 });
 
                 parsedLayers.push({
                     name: layerName,
                     keys: keys
                 });
+                
+                layerIndex++;
             }
 
             if (parsedLayers.length === 0) {
@@ -840,6 +905,43 @@
 
             layers = parsedLayers;
             currentLayer = 0;
+        }
+
+        function parseKeycodes(keysStr) {
+            const keycodes = [];
+            let depth = 0;
+            let current = '';
+            
+            for (let i = 0; i < keysStr.length; i++) {
+                const char = keysStr[i];
+                
+                if (char === '(') {
+                    depth++;
+                    current += char;
+                } else if (char === ')') {
+                    depth--;
+                    current += char;
+                } else if (char === ',' && depth === 0) {
+                    const trimmed = current.trim();
+                    if (trimmed && trimmed !== '\\') {
+                        keycodes.push(trimmed);
+                    }
+                    current = '';
+                } else if (char !== '\n' && char !== '\r' && char !== '\\') {
+                    current += char;
+                } else if (char === '\\') {
+                    // Skip backslash line continuations
+                    continue;
+                }
+            }
+            
+            // Don't forget the last one
+            const lastTrimmed = current.trim();
+            if (lastTrimmed && lastTrimmed !== '\\') {
+                keycodes.push(lastTrimmed);
+            }
+
+            return keycodes;
         }
 
         function initializeEmptyLayers() {
@@ -863,39 +965,32 @@
 
         // ==================== SAMPLE LAYOUT ====================
         function loadSampleLayout() {
-            // Q1 HE ANSI サンプル
             layoutData = [
-                // Row 0
                 {id:'k0',x:0,y:0,w:1,h:1},{id:'k1',x:1.25,y:0,w:1,h:1},{id:'k2',x:2.25,y:0,w:1,h:1},
                 {id:'k3',x:3.25,y:0,w:1,h:1},{id:'k4',x:4.25,y:0,w:1,h:1},{id:'k5',x:5.5,y:0,w:1,h:1},
                 {id:'k6',x:6.5,y:0,w:1,h:1},{id:'k7',x:7.5,y:0,w:1,h:1},{id:'k8',x:8.5,y:0,w:1,h:1},
                 {id:'k9',x:9.75,y:0,w:1,h:1},{id:'k10',x:10.75,y:0,w:1,h:1},{id:'k11',x:11.75,y:0,w:1,h:1},
                 {id:'k12',x:12.75,y:0,w:1,h:1},{id:'k13',x:14,y:0,w:1,h:1},{id:'k14',x:15.25,y:0,w:1,h:1},
-                // Row 1
                 {id:'k15',x:0,y:1.25,w:1,h:1},{id:'k16',x:1,y:1.25,w:1,h:1},{id:'k17',x:2,y:1.25,w:1,h:1},
                 {id:'k18',x:3,y:1.25,w:1,h:1},{id:'k19',x:4,y:1.25,w:1,h:1},{id:'k20',x:5,y:1.25,w:1,h:1},
                 {id:'k21',x:6,y:1.25,w:1,h:1},{id:'k22',x:7,y:1.25,w:1,h:1},{id:'k23',x:8,y:1.25,w:1,h:1},
                 {id:'k24',x:9,y:1.25,w:1,h:1},{id:'k25',x:10,y:1.25,w:1,h:1},{id:'k26',x:11,y:1.25,w:1,h:1},
                 {id:'k27',x:12,y:1.25,w:1,h:1},{id:'k28',x:13,y:1.25,w:2,h:1},{id:'k29',x:15.25,y:1.25,w:1,h:1},
-                // Row 2
                 {id:'k30',x:0,y:2.25,w:1.5,h:1},{id:'k31',x:1.5,y:2.25,w:1,h:1},{id:'k32',x:2.5,y:2.25,w:1,h:1},
                 {id:'k33',x:3.5,y:2.25,w:1,h:1},{id:'k34',x:4.5,y:2.25,w:1,h:1},{id:'k35',x:5.5,y:2.25,w:1,h:1},
                 {id:'k36',x:6.5,y:2.25,w:1,h:1},{id:'k37',x:7.5,y:2.25,w:1,h:1},{id:'k38',x:8.5,y:2.25,w:1,h:1},
                 {id:'k39',x:9.5,y:2.25,w:1,h:1},{id:'k40',x:10.5,y:2.25,w:1,h:1},{id:'k41',x:11.5,y:2.25,w:1,h:1},
                 {id:'k42',x:12.5,y:2.25,w:1,h:1},{id:'k43',x:13.5,y:2.25,w:1.5,h:1},{id:'k44',x:15.25,y:2.25,w:1,h:1},
-                // Row 3
                 {id:'k45',x:0,y:3.25,w:1.75,h:1},{id:'k46',x:1.75,y:3.25,w:1,h:1},{id:'k47',x:2.75,y:3.25,w:1,h:1},
                 {id:'k48',x:3.75,y:3.25,w:1,h:1},{id:'k49',x:4.75,y:3.25,w:1,h:1},{id:'k50',x:5.75,y:3.25,w:1,h:1},
                 {id:'k51',x:6.75,y:3.25,w:1,h:1},{id:'k52',x:7.75,y:3.25,w:1,h:1},{id:'k53',x:8.75,y:3.25,w:1,h:1},
                 {id:'k54',x:9.75,y:3.25,w:1,h:1},{id:'k55',x:10.75,y:3.25,w:1,h:1},{id:'k56',x:11.75,y:3.25,w:1,h:1},
                 {id:'k57',x:12.75,y:3.25,w:2.25,h:1},{id:'k58',x:15.25,y:3.25,w:1,h:1},
-                // Row 4
                 {id:'k59',x:0,y:4.25,w:2.25,h:1},{id:'k60',x:2.25,y:4.25,w:1,h:1},{id:'k61',x:3.25,y:4.25,w:1,h:1},
                 {id:'k62',x:4.25,y:4.25,w:1,h:1},{id:'k63',x:5.25,y:4.25,w:1,h:1},{id:'k64',x:6.25,y:4.25,w:1,h:1},
                 {id:'k65',x:7.25,y:4.25,w:1,h:1},{id:'k66',x:8.25,y:4.25,w:1,h:1},{id:'k67',x:9.25,y:4.25,w:1,h:1},
                 {id:'k68',x:10.25,y:4.25,w:1,h:1},{id:'k69',x:11.25,y:4.25,w:1,h:1},{id:'k70',x:12.25,y:4.25,w:1.75,h:1},
                 {id:'k71',x:14.25,y:4.25,w:1,h:1},{id:'k72',x:15.25,y:4.25,w:1,h:1},
-                // Row 5
                 {id:'k73',x:0,y:5.25,w:1.25,h:1},{id:'k74',x:1.25,y:5.25,w:1.25,h:1},{id:'k75',x:2.5,y:5.25,w:1.25,h:1},
                 {id:'k76',x:3.75,y:5.25,w:6.25,h:1},{id:'k77',x:10,y:5.25,w:1.25,h:1},{id:'k78',x:11.25,y:5.25,w:1.25,h:1},
                 {id:'k79',x:12.5,y:5.25,w:1.25,h:1},{id:'k80',x:13.25,y:5.25,w:1,h:1},{id:'k81',x:14.25,y:5.25,w:1,h:1},
@@ -904,89 +999,104 @@
             
             layoutName = 'LAYOUT_ansi_82';
 
-            // デフォルトキーマップ
-            layers = [{
-                name: 'Base',
-                keys: {
-                    'k0':'KC_ESC','k1':'KC_F1','k2':'KC_F2','k3':'KC_F3','k4':'KC_F4',
-                    'k5':'KC_F5','k6':'KC_F6','k7':'KC_F7','k8':'KC_F8','k9':'KC_F9',
-                    'k10':'KC_F10','k11':'KC_F11','k12':'KC_F12','k13':'KC_DEL','k14':'KC_MUTE',
-                    'k15':'KC_GRV','k16':'KC_1','k17':'KC_2','k18':'KC_3','k19':'KC_4',
-                    'k20':'KC_5','k21':'KC_6','k22':'KC_7','k23':'KC_8','k24':'KC_9',
-                    'k25':'KC_0','k26':'KC_MINS','k27':'KC_EQL','k28':'KC_BSPC','k29':'KC_PGUP',
-                    'k30':'KC_TAB','k31':'KC_Q','k32':'KC_W','k33':'KC_E','k34':'KC_R',
-                    'k35':'KC_T','k36':'KC_Y','k37':'KC_U','k38':'KC_I','k39':'KC_O',
-                    'k40':'KC_P','k41':'KC_LBRC','k42':'KC_RBRC','k43':'KC_BSLS','k44':'KC_PGDN',
-                    'k45':'KC_CAPS','k46':'KC_A','k47':'KC_S','k48':'KC_D','k49':'KC_F',
-                    'k50':'KC_G','k51':'KC_H','k52':'KC_J','k53':'KC_K','k54':'KC_L',
-                    'k55':'KC_SCLN','k56':'KC_QUOT','k57':'KC_ENT','k58':'KC_HOME',
-                    'k59':'KC_LSFT','k60':'KC_Z','k61':'KC_X','k62':'KC_C','k63':'KC_V',
-                    'k64':'KC_B','k65':'KC_N','k66':'KC_M','k67':'KC_COMM','k68':'KC_DOT',
-                    'k69':'KC_SLSH','k70':'KC_RSFT','k71':'KC_UP','k72':'KC_END',
-                    'k73':'KC_LCTL','k74':'KC_LGUI','k75':'KC_LALT','k76':'KC_SPC',
-                    'k77':'KC_RALT','k78':'MO(1)','k79':'KC_RCTL','k80':'KC_LEFT',
-                    'k81':'KC_DOWN','k82':'KC_RGHT'
+            layers = [
+                {
+                    name: 'MAC_BASE',
+                    keys: {
+                        'k0':'KC_ESC','k1':'KC_BRID','k2':'KC_BRIU','k3':'KC_MCTL','k4':'KC_LPAD',
+                        'k5':'RGB_VAD','k6':'RGB_VAI','k7':'KC_MPRV','k8':'KC_MPLY','k9':'KC_MNXT',
+                        'k10':'KC_MUTE','k11':'KC_VOLD','k12':'KC_VOLU','k13':'KC_DEL','k14':'KC_MUTE',
+                        'k15':'KC_GRV','k16':'KC_1','k17':'KC_2','k18':'KC_3','k19':'KC_4',
+                        'k20':'KC_5','k21':'KC_6','k22':'KC_7','k23':'KC_8','k24':'KC_9',
+                        'k25':'KC_0','k26':'KC_MINS','k27':'KC_EQL','k28':'KC_BSPC','k29':'KC_PGUP',
+                        'k30':'KC_TAB','k31':'KC_Q','k32':'KC_W','k33':'KC_E','k34':'KC_R',
+                        'k35':'KC_T','k36':'KC_Y','k37':'KC_U','k38':'KC_I','k39':'KC_O',
+                        'k40':'KC_P','k41':'KC_LBRC','k42':'KC_RBRC','k43':'KC_BSLS','k44':'KC_PGDN',
+                        'k45':'KC_CAPS','k46':'KC_A','k47':'KC_S','k48':'KC_D','k49':'KC_F',
+                        'k50':'KC_G','k51':'KC_H','k52':'KC_J','k53':'KC_K','k54':'KC_L',
+                        'k55':'KC_SCLN','k56':'KC_QUOT','k57':'KC_ENT','k58':'KC_HOME',
+                        'k59':'KC_LSFT','k60':'KC_Z','k61':'KC_X','k62':'KC_C','k63':'KC_V',
+                        'k64':'KC_B','k65':'KC_N','k66':'KC_M','k67':'KC_COMM','k68':'KC_DOT',
+                        'k69':'KC_SLSH','k70':'KC_RSFT','k71':'KC_UP','k72':'KC_END',
+                        'k73':'KC_LCTL','k74':'KC_LALT','k75':'KC_LGUI','k76':'KC_SPC',
+                        'k77':'KC_RGUI','k78':'MO(1)','k79':'KC_RCTL','k80':'KC_LEFT',
+                        'k81':'KC_DOWN','k82':'KC_RGHT'
+                    }
+                },
+                {
+                    name: 'MAC_FN',
+                    keys: Object.fromEntries([...Array(83)].map((_, i) => [`k${i}`, 'KC_TRNS']))
+                },
+                {
+                    name: 'WIN_BASE',
+                    keys: {
+                        'k0':'KC_ESC','k1':'KC_F1','k2':'KC_F2','k3':'KC_F3','k4':'KC_F4',
+                        'k5':'KC_F5','k6':'KC_F6','k7':'KC_F7','k8':'KC_F8','k9':'KC_F9',
+                        'k10':'KC_F10','k11':'KC_F11','k12':'KC_F12','k13':'KC_DEL','k14':'KC_MUTE',
+                        'k15':'KC_GRV','k16':'KC_1','k17':'KC_2','k18':'KC_3','k19':'KC_4',
+                        'k20':'KC_5','k21':'KC_6','k22':'KC_7','k23':'KC_8','k24':'KC_9',
+                        'k25':'KC_0','k26':'KC_MINS','k27':'KC_EQL','k28':'KC_BSPC','k29':'KC_PGUP',
+                        'k30':'KC_TAB','k31':'KC_Q','k32':'KC_W','k33':'KC_E','k34':'KC_R',
+                        'k35':'KC_T','k36':'KC_Y','k37':'KC_U','k38':'KC_I','k39':'KC_O',
+                        'k40':'KC_P','k41':'KC_LBRC','k42':'KC_RBRC','k43':'KC_BSLS','k44':'KC_PGDN',
+                        'k45':'KC_CAPS','k46':'KC_A','k47':'KC_S','k48':'KC_D','k49':'KC_F',
+                        'k50':'KC_G','k51':'KC_H','k52':'KC_J','k53':'KC_K','k54':'KC_L',
+                        'k55':'KC_SCLN','k56':'KC_QUOT','k57':'KC_ENT','k58':'KC_HOME',
+                        'k59':'KC_LSFT','k60':'KC_Z','k61':'KC_X','k62':'KC_C','k63':'KC_V',
+                        'k64':'KC_B','k65':'KC_N','k66':'KC_M','k67':'KC_COMM','k68':'KC_DOT',
+                        'k69':'KC_SLSH','k70':'KC_RSFT','k71':'KC_UP','k72':'KC_END',
+                        'k73':'KC_LCTL','k74':'KC_LGUI','k75':'KC_LALT','k76':'KC_SPC',
+                        'k77':'KC_RALT','k78':'MO(3)','k79':'KC_RCTL','k80':'KC_LEFT',
+                        'k81':'KC_DOWN','k82':'KC_RGHT'
+                    }
+                },
+                {
+                    name: 'WIN_FN',
+                    keys: Object.fromEntries([...Array(83)].map((_, i) => [`k${i}`, 'KC_TRNS']))
                 }
-            }, {
-                name: 'Fn',
-                keys: {
-                    'k0':'KC_TRNS','k1':'KC_BRID','k2':'KC_BRIU','k3':'KC_MCTL','k4':'KC_LPAD',
-                    'k5':'RGB_VAD','k6':'RGB_VAI','k7':'KC_MPRV','k8':'KC_MPLY','k9':'KC_MNXT',
-                    'k10':'KC_MUTE','k11':'KC_VOLD','k12':'KC_VOLU','k13':'KC_TRNS','k14':'RGB_TOG',
-                    'k15':'KC_TRNS','k16':'KC_TRNS','k17':'KC_TRNS','k18':'KC_TRNS','k19':'KC_TRNS',
-                    'k20':'KC_TRNS','k21':'KC_TRNS','k22':'KC_TRNS','k23':'KC_TRNS','k24':'KC_TRNS',
-                    'k25':'KC_TRNS','k26':'KC_TRNS','k27':'KC_TRNS','k28':'KC_TRNS','k29':'KC_TRNS',
-                    'k30':'KC_TRNS','k31':'KC_TRNS','k32':'KC_TRNS','k33':'KC_TRNS','k34':'KC_TRNS',
-                    'k35':'KC_TRNS','k36':'KC_TRNS','k37':'KC_TRNS','k38':'KC_TRNS','k39':'KC_TRNS',
-                    'k40':'KC_TRNS','k41':'KC_TRNS','k42':'KC_TRNS','k43':'KC_TRNS','k44':'KC_TRNS',
-                    'k45':'KC_TRNS','k46':'KC_TRNS','k47':'KC_TRNS','k48':'KC_TRNS','k49':'KC_TRNS',
-                    'k50':'KC_TRNS','k51':'KC_TRNS','k52':'KC_TRNS','k53':'KC_TRNS','k54':'KC_TRNS',
-                    'k55':'KC_TRNS','k56':'KC_TRNS','k57':'KC_TRNS','k58':'KC_TRNS',
-                    'k59':'KC_TRNS','k60':'KC_TRNS','k61':'KC_TRNS','k62':'KC_TRNS','k63':'KC_TRNS',
-                    'k64':'KC_TRNS','k65':'KC_TRNS','k66':'KC_TRNS','k67':'KC_TRNS','k68':'KC_TRNS',
-                    'k69':'KC_TRNS','k70':'KC_TRNS','k71':'KC_TRNS','k72':'KC_TRNS',
-                    'k73':'KC_TRNS','k74':'KC_TRNS','k75':'KC_TRNS','k76':'KC_TRNS',
-                    'k77':'KC_TRNS','k78':'KC_TRNS','k79':'KC_TRNS','k80':'KC_TRNS',
-                    'k81':'KC_TRNS','k82':'KC_TRNS'
-                }
-            }];
+            ];
 
             setStatus('keyboardJsonStatus', 'success', '✓ サンプル読込完了');
             renderLayerTabs();
             renderKeyboard();
+            updateLayerBadge();
         }
 
         // ==================== RENDERING ====================
         function getDisplayName(keycode) {
             if (!keycode) return '?';
-            if (KEYCODE_DISPLAY[keycode]) return KEYCODE_DISPLAY[keycode];
             
-            // MO(), TG(), LT() etc
-            const moMatch = keycode.match(/^MO\((\d+)\)/);
+            // Normalize first
+            const normalizedKc = KEYCODE_ALIASES[keycode] || keycode;
+            
+            if (KEYCODE_DISPLAY[normalizedKc]) return KEYCODE_DISPLAY[normalizedKc];
+            
+            const moMatch = normalizedKc.match(/^MO\((\d+)\)/);
             if (moMatch) return `MO${moMatch[1]}`;
             
-            const tgMatch = keycode.match(/^TG\((\d+)\)/);
+            const tgMatch = normalizedKc.match(/^TG\((\d+)\)/);
             if (tgMatch) return `TG${tgMatch[1]}`;
             
-            const toMatch = keycode.match(/^TO\((\d+)\)/);
+            const toMatch = normalizedKc.match(/^TO\((\d+)\)/);
             if (toMatch) return `TO${toMatch[1]}`;
             
-            const ltMatch = keycode.match(/^LT\((\d+),\s*(\w+)\)/);
+            const ltMatch = normalizedKc.match(/^LT\((\d+),\s*(\w+)\)/);
             if (ltMatch) {
                 const baseKey = KEYCODE_DISPLAY[ltMatch[2]] || ltMatch[2].replace('KC_', '');
                 return `LT${ltMatch[1]}/${baseKey}`;
             }
 
-            // Remove KC_ prefix
-            return keycode.replace('KC_', '').substring(0, 6);
+            return normalizedKc.replace('KC_', '').substring(0, 6);
         }
 
         function getKeyClass(keycode) {
             if (!keycode) return '';
-            if (keycode === 'KC_TRNS') return 'transparent';
-            if (keycode === 'KC_NO') return 'transparent';
-            if (keycode.match(/^(KC_LCTL|KC_RCTL|KC_LSFT|KC_RSFT|KC_LALT|KC_RALT|KC_LGUI|KC_RGUI)/)) return 'modifier';
-            if (keycode.match(/^(MO|TG|LT|TO|OSL)\(/)) return 'layer-key';
+            const normalizedKc = KEYCODE_ALIASES[keycode] || keycode;
+            
+            if (normalizedKc === 'KC_TRNS' || normalizedKc === '_______') return 'transparent';
+            if (normalizedKc === 'KC_NO' || normalizedKc === 'XXXXXXX') return 'transparent';
+            if (normalizedKc.match(/^(KC_LCTL|KC_RCTL|KC_LSFT|KC_RSFT|KC_LALT|KC_RALT|KC_LGUI|KC_RGUI)/)) return 'modifier';
+            if (normalizedKc.match(/^(MO|TG|LT|TO|OSL)\(/)) return 'layer-key';
             return '';
         }
 
@@ -999,7 +1109,7 @@
             
             container.innerHTML = layers.map((layer, i) => `
                 <button class="layer-tab ${i === currentLayer ? 'active' : ''}" onclick="switchLayer(${i})">
-                    ${layer.name}
+                    ${i}: ${layer.name}
                     ${layers.length > 1 ? `<span class="delete-layer" onclick="event.stopPropagation(); deleteLayer(${i})">×</span>` : ''}
                 </button>
             `).join('');
@@ -1011,7 +1121,7 @@
             if (!layoutData || layoutData.length === 0) {
                 container.innerHTML = `
                     <div class="no-layout">
-                        <p>⬆️ keyboard.json を読み込んでください</p>
+                        <p>⬇️ 下の「設定」からファイルを読み込んでください</p>
                         <p>または下のサンプルを使用:</p>
                         <button class="btn btn-primary" onclick="loadSampleLayout()" style="margin-top: 10px;">
                             Q1 HE サンプルを読み込む
@@ -1021,7 +1131,6 @@
                 return;
             }
 
-            // Calculate keyboard dimensions
             let maxX = 0, maxY = 0;
             layoutData.forEach(key => {
                 const right = key.x + key.w;
@@ -1072,7 +1181,7 @@
             const keycode = layers[currentLayer]?.keys[keyId] || 'KC_NO';
             
             document.getElementById('editorPanel').style.display = 'block';
-            document.getElementById('editingKeyName').textContent = keyId;
+            document.getElementById('editingKeyName').textContent = `Layer ${currentLayer} - ${keyId}`;
             document.getElementById('keycodeInput').value = keycode;
             
             renderKeyboard();
@@ -1083,7 +1192,9 @@
             
             const keycode = document.getElementById('keycodeInput').value.trim();
             if (keycode) {
-                layers[currentLayer].keys[selectedKey] = keycode;
+                // Normalize on apply
+                const normalizedKc = KEYCODE_ALIASES[keycode] || keycode;
+                layers[currentLayer].keys[selectedKey] = normalizedKc;
                 renderKeyboard();
             }
         }
@@ -1110,6 +1221,11 @@
                 return;
             }
             
+            if (layers.length >= MAX_LAYERS) {
+                alert(`最大${MAX_LAYERS}レイヤーまでです`);
+                return;
+            }
+            
             const name = prompt('新しいレイヤーの名前:', `Layer${layers.length}`);
             if (name) {
                 const newLayer = { name, keys: {} };
@@ -1118,6 +1234,7 @@
                 });
                 layers.push(newLayer);
                 switchLayer(layers.length - 1);
+                updateLayerBadge();
             }
         }
 
@@ -1133,6 +1250,25 @@
                 }
                 renderLayerTabs();
                 renderKeyboard();
+                updateLayerBadge();
+            }
+        }
+
+        function clearAll() {
+            if (confirm('全てのデータをクリアしますか？')) {
+                layoutData = null;
+                layoutName = '';
+                layers = [];
+                currentLayer = 0;
+                selectedKey = null;
+                document.getElementById('keyboardJsonFile').value = '';
+                document.getElementById('keymapCFile').value = '';
+                document.getElementById('keyboardJsonStatus').textContent = '';
+                document.getElementById('keymapCStatus').textContent = '';
+                document.getElementById('editorPanel').style.display = 'none';
+                renderLayerTabs();
+                renderKeyboard();
+                updateLayerBadge();
             }
         }
 
@@ -1158,6 +1294,7 @@
                 setStatus('keyboardJsonStatus', 'success', '✓ 保存データ読込');
                 renderLayerTabs();
                 renderKeyboard();
+                updateLayerBadge();
                 alert('読み込みました！');
             } else {
                 alert('保存されたデータがありません');
@@ -1199,11 +1336,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                 const layerNameClean = layer.name.toUpperCase().replace(/[^A-Z0-9]/g, '_');
                 output += `    [_${layerNameClean}] = ${layoutMacro}(\n`;
                 
-                // Get keys in order
                 const keyOrder = layoutData.map(k => k.id);
                 const keycodes = keyOrder.map(id => layer.keys[id] || 'KC_NO');
                 
-                // Format with line breaks (roughly 10 keys per line)
                 const chunkSize = 10;
                 for (let i = 0; i < keycodes.length; i += chunkSize) {
                     const chunk = keycodes.slice(i, i + chunkSize);
@@ -1252,6 +1387,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         // Initialize
         renderLayerTabs();
         renderKeyboard();
+        updateLayerBadge();
     </script>
 </body>
 </html>

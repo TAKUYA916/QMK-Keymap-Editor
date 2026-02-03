@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QMK Keymap Editor - Enhanced v2</title>
+    <title>QMK Keymap Editor - Optimized</title>
     <style>
         * {
             margin: 0;
@@ -49,6 +49,7 @@
             color: #00d4ff;
             display: flex;
             align-items: center;
+            justify-content: space-between; /* 両端揃えに変更 */
             gap: 8px;
         }
 
@@ -259,10 +260,10 @@
         .keyboard-wrapper {
             display: flex;
             justify-content: center;
-            align-items: flex-start; /* centerから変更して上寄せに */
+            align-items: flex-start;
             padding: 40px;
             min-height: 300px;
-            overflow: auto; /* スクロール可能に */
+            overflow: auto;
         }
 
         .keyboard-container {
@@ -270,7 +271,6 @@
             background: rgba(0, 0, 0, 0.3);
             border-radius: 12px;
             padding: 20px;
-            /* transformとtransitionを削除してJS制御に変更 */
         }
 
         .key {
@@ -284,7 +284,7 @@
             text-align: center;
             font-size: 11px;
             cursor: pointer;
-            transition: all 0.1s; /* 反応を良くするために短縮 */
+            transition: all 0.1s;
             padding: 4px;
             word-break: break-all;
             overflow: hidden;
@@ -298,7 +298,6 @@
             border-color: #00d4ff;
         }
 
-        /* 選択時のハイライト強化 */
         .key.selected {
             border-color: #00ff88 !important;
             box-shadow: 0 0 15px rgba(0, 255, 136, 0.8), inset 0 0 10px rgba(0, 255, 136, 0.2) !important;
@@ -329,7 +328,7 @@
             background: linear-gradient(145deg, #3a3a4a, #2a2a3a);
             border: 2px solid #ff8800;
             border-radius: 6px;
-            display: none; /* デフォルト非表示 */
+            display: none;
             align-items: center;
             justify-content: center;
             text-align: center;
@@ -338,7 +337,7 @@
             transition: all 0.2s;
             padding: 4px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
-            z-index: 150; /* キーより前面に */
+            z-index: 150;
         }
 
         .encoder-side-box.visible {
@@ -579,12 +578,14 @@
         <h1>🎹 QMK Keymap Editor</h1>
 
         <div class="panel">
-            <div class="panel-title">📂 レイヤー管理</div>
+            <div class="panel-title">
+                <div>📂 レイヤー管理</div>
+                <div style="font-size: 0.9em; color: #888;">
+                    レイヤー数: <span id="layerCount" style="color: #00d4ff; font-weight: bold; font-size: 1.1em;">0</span>
+                </div>
+            </div>
             <div class="layer-tabs" id="layerTabs">
                 <button class="add-layer-btn" onclick="addLayer()">+ レイヤー追加</button>
-            </div>
-            <div style="font-size: 0.9em; color: #888;">
-                現在のレイヤー数: <span id="layerCount" style="color: #00d4ff;">0</span>
             </div>
         </div>
 
@@ -774,21 +775,21 @@
                                     <strong>機能マップ (直接編集可能):</strong>
                                 </div>
                                 <div style="margin-bottom: 10px;">
-                                    <label style="display: block; font-size: 0.85em; color: #aaa; margin-bottom: 5px;">↶ 左回転 (CCW)</label>
+                                    <label style="display: block; font-size: 0.85em; color: #aaa; margin-bottom: 5px;">左回転 (CCW)</label>
                                     <input type="text" id="encoderCcwInput" placeholder="KC_VOLD" 
                                            style="width: 100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; padding: 8px; color: #fff;"
                                            onchange="updateEncoderKeycode('ccw', this.value)"
                                            onfocus="selectKey(selectedKey, 'ccw')">
                                 </div>
                                 <div style="margin-bottom: 10px;">
-                                    <label style="display: block; font-size: 0.85em; color: #aaa; margin-bottom: 5px;">⬇️ プッシュ (Push)</label>
+                                    <label style="display: block; font-size: 0.85em; color: #aaa; margin-bottom: 5px;">プッシュ (Push)</label>
                                     <input type="text" id="encoderPushInput" placeholder="KC_MUTE" 
                                            style="width: 100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; padding: 8px; color: #fff;"
                                            onchange="updateEncoderKeycode('push', this.value)"
                                            onfocus="selectKey(selectedKey, 'push')">
                                 </div>
                                 <div>
-                                    <label style="display: block; font-size: 0.85em; color: #aaa; margin-bottom: 5px;">↷ 右回転 (CW)</label>
+                                    <label style="display: block; font-size: 0.85em; color: #aaa; margin-bottom: 5px;">右回転 (CW)</label>
                                     <input type="text" id="encoderCwInput" placeholder="KC_VOLU" 
                                            style="width: 100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; padding: 8px; color: #fff;"
                                            onchange="updateEncoderKeycode('cw', this.value)"
@@ -836,27 +837,27 @@
                     </div>
                 </div>
                 
-                <div id="notesTabSide" class="info-tab-content" style="display: none; max-height: 400px; overflow-y: auto;">
+                <div id="notesTab" class="info-tab-content" style="display: none; max-height: 400px; overflow-y: auto;">
                     <div style="margin-bottom: 15px;">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
                             <h4 style="color: #00d4ff; font-size: 0.95em; margin: 0;">⚡ Tap Dance</h4>
                             <button class="btn btn-secondary" style="padding: 4px 10px; font-size: 0.8em;" onclick="addNote('tapDance')">+ 追加</button>
                         </div>
-                        <div id="tapDanceNotesSide"></div>
+                        <div id="tapDanceNotes"></div>
                     </div>
                     <div style="margin-bottom: 15px;">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
                             <h4 style="color: #00d4ff; font-size: 0.95em; margin: 0;">🔗 Combo</h4>
                             <button class="btn btn-secondary" style="padding: 4px 10px; font-size: 0.8em;" onclick="addNote('combo')">+ 追加</button>
                         </div>
-                        <div id="comboNotesSide"></div>
+                        <div id="comboNotes"></div>
                     </div>
                     <div>
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
                             <h4 style="color: #00d4ff; font-size: 0.95em; margin: 0;">📌 Macro / その他</h4>
                             <button class="btn btn-secondary" style="padding: 4px 10px; font-size: 0.8em;" onclick="addNote('macro')">+ 追加</button>
                         </div>
-                        <div id="macroNotesSide"></div>
+                        <div id="macroNotes"></div>
                     </div>
                 </div>
             </div>
@@ -866,7 +867,6 @@
             <div class="tab-buttons">
                 <button class="tab-btn active" onclick="switchTab('globalColor')">全体カラー</button>
                 <button class="tab-btn" onclick="switchTab('fileLoad')">ファイル読込</button>
-                <button class="tab-btn" onclick="switchTab('notes')">メモ</button>
                 <button class="tab-btn" onclick="switchTab('save')">保存/読込</button>
             </div>
 
@@ -952,25 +952,6 @@
                 </div>
             </div>
 
-            <div class="tab-content" id="notesTab">
-                <div class="panel-title">📝 Tap Dance / Combo / Macro メモ</div>
-                <div style="margin-bottom: 20px;">
-                    <h4 style="color: #00d4ff; margin-bottom: 10px;">Tap Dance</h4>
-                    <div id="tapDanceNotes"></div>
-                    <button class="btn btn-secondary" style="margin-top: 10px;" onclick="addNote('tapDance')">+ 追加</button>
-                </div>
-                <div style="margin-bottom: 20px;">
-                    <h4 style="color: #00d4ff; margin-bottom: 10px;">Combo</h4>
-                    <div id="comboNotes"></div>
-                    <button class="btn btn-secondary" style="margin-top: 10px;" onclick="addNote('combo')">+ 追加</button>
-                </div>
-                <div>
-                    <h4 style="color: #00d4ff; margin-bottom: 10px;">Macro / その他</h4>
-                    <div id="macroNotes"></div>
-                    <button class="btn btn-secondary" style="margin-top: 10px;" onclick="addNote('macro')">+ 追加</button>
-                </div>
-            </div>
-
             <div class="tab-content" id="saveTab">
                 <div class="panel-title">💾 保存 / 読込</div>
                 
@@ -982,7 +963,7 @@
                                    value="" onchange="saveGistToken()">
                         </div>
                         <div class="gist-input">
-                            <input type="text" id="gistId" placeholder="Gist ID (保存後に自動入力)" readonly>
+                            <input type="text" id="gistId" placeholder="Gist ID (保存後に自動入力、または読み込み時に入力)" >
                         </div>
                         <div style="font-size: 0.85em; color: #888; margin-top: 5px;">
                             ※ トークンは <a href="https://github.com/settings/tokens" target="_blank" style="color: #00d4ff;">GitHub Settings</a> から作成 (gist権限のみでOK)
@@ -1045,7 +1026,7 @@
 
         // ==================== TAB SWITCHING ====================
         function switchTab(tabName) {
-            const tabs = ['globalColor', 'fileLoad', 'notes', 'save'];
+            const tabs = ['globalColor', 'fileLoad', 'save'];
             tabs.forEach(tab => {
                 const btn = document.querySelector(`[onclick="switchTab('${tab}')"]`);
                 const content = document.getElementById(tab + 'Tab');
@@ -1065,8 +1046,7 @@
             const tabs = ['keyInfo', 'notes'];
             tabs.forEach(tab => {
                 const btn = document.querySelector(`[onclick="switchInfoTab('${tab}')"]`);
-                const contentId = tab === 'notes' ? 'notesTabSide' : tab + 'Tab';
-                const content = document.getElementById(contentId);
+                const content = document.getElementById(tab + 'Tab');
                 
                 if (tab === tabName) {
                     btn.classList.add('active');
@@ -1291,9 +1271,9 @@
                 info += `<strong style="color: #ff8800;">エンコーダー設定:</strong><br>`;
                 const enc = encoderKeys[selectedKey];
                 info += `<div style="margin: 10px 0; font-size: 0.85em;">`;
-                info += `<div style="margin-bottom: 4px;">↶ 左回転: <span style="color:#00d4ff">${enc.ccw}</span></div>`;
-                info += `<div style="margin-bottom: 4px;">⬇️ プッシュ: <span style="color:#00d4ff">${enc.push}</span></div>`;
-                info += `<div>↷ 右回転: <span style="color:#00d4ff">${enc.cw}</span></div>`;
+                info += `<div style="margin-bottom: 4px;">左回転: <span style="color:#00d4ff">${enc.ccw}</span></div>`;
+                info += `<div style="margin-bottom: 4px;">プッシュ: <span style="color:#00d4ff">${enc.push}</span></div>`;
+                info += `<div>右回転: <span style="color:#00d4ff">${enc.cw}</span></div>`;
                 info += `</div>`;
                 
                 let modeText = "";
@@ -1511,7 +1491,8 @@
                     pushEl.className = 'key encoder';
                     pushEl.dataset.keyId = key.id;
                     pushEl.dataset.encoderPart = 'push';
-                    pushEl.innerHTML = `<div style="font-size: 1.2em;">⬇️</div><div style="font-size: 0.8em;">${formatKeycode(enc.push)}</div>`;
+                    // アイコンなし
+                    pushEl.innerHTML = `<div style="font-size: 0.9em;">${formatKeycode(enc.push)}</div>`;
                     
                     pushEl.style.left = x + 'px';
                     pushEl.style.top = y + 'px';
@@ -1553,7 +1534,8 @@
                     if (isSelected) ccwEl.classList.add('visible'); // 選択時のみ表示
                     ccwEl.dataset.keyId = key.id;
                     ccwEl.dataset.encoderPart = 'ccw';
-                    ccwEl.innerHTML = `<div>↶</div><div style="font-size: 0.8em;">${formatKeycode(enc.ccw)}</div>`;
+                    // アイコンなし
+                    ccwEl.innerHTML = `<div style="font-size: 0.8em;">${formatKeycode(enc.ccw)}</div>`;
                     ccwEl.style.left = (x - w - 8) + 'px';
                     ccwEl.style.top = y + 'px';
                     ccwEl.style.width = w + 'px';
@@ -1586,7 +1568,8 @@
                     if (isSelected) cwEl.classList.add('visible'); // 選択時のみ表示
                     cwEl.dataset.keyId = key.id;
                     cwEl.dataset.encoderPart = 'cw';
-                    cwEl.innerHTML = `<div>↷</div><div style="font-size: 0.8em;">${formatKeycode(enc.cw)}</div>`;
+                    // アイコンなし
+                    cwEl.innerHTML = `<div style="font-size: 0.8em;">${formatKeycode(enc.cw)}</div>`;
                     cwEl.style.left = (x + w + 8) + 'px';
                     cwEl.style.top = y + 'px';
                     cwEl.style.width = w + 'px';
@@ -1684,8 +1667,6 @@
                 const partLabel = selectedEncoderSide === 'ccw' ? '左回転' : selectedEncoderSide === 'cw' ? '右回転' : 'プッシュ';
                 document.getElementById('selectedKeyId').textContent = `(Key ${keyId} - ${partLabel})`;
                 
-                // エンコーダーカテゴリーボタンをアクティブにすると分かりやすいかも？
-                // showCategory('encoder'); // これは強制しすぎかもしれないのでコメントアウト
             } else {
                 // 通常キー
                 keycode = currentLayerData?.keys[keyId] || '';
@@ -1931,54 +1912,29 @@
             const note = notes[type].find(n => n.id === id);
             if (note) {
                 note[field] = value;
-                // 他方のタブの内容も更新（シンプルに全再描画）
-                // ただし入力中のフォーカスが外れるのを防ぐため、非アクティブな方だけ更新したいが、
-                // 簡便のため、現在アクティブでないコンテナだけ更新する手もあるが、
-                // ここではIDが一致するものを見つけてvalueをセットする方式をとる
-                syncNoteInput(type, id, field, value);
             }
         }
         
-        function syncNoteInput(type, id, field, value) {
-             // Main Tab Input
-             const mainInput = document.querySelector(`#${type}Notes input[data-id="${id}"][data-field="${field}"]`);
-             if (mainInput && document.activeElement !== mainInput) mainInput.value = value;
-             
-             // Side Tab Input
-             const sideInput = document.querySelector(`#${type}NotesSide input[data-id="${id}"][data-field="${field}"]`);
-             if (sideInput && document.activeElement !== sideInput) sideInput.value = value;
-        }
-
         function renderNotes(type) {
-            const containers = [
-                document.getElementById(type + 'Notes'),
-                document.getElementById(type + 'NotesSide')
-            ];
+            const container = document.getElementById(type + 'Notes');
             
-            containers.forEach(container => {
-                if (!container) return;
-                
-                // 現在の入力値を保持していないと、再描画でフォーカスが外れる問題があるため、
-                // 完全なリアクティブフレームワークでない場合はDOM操作に気を使うが、
-                // ここではシンプルにinnerHTMLで書き換える。
-                // (入力中の更新はonchangeで処理されるため、UXは許容範囲)
-                
-                container.innerHTML = '';
-                
-                notes[type].forEach(note => {
-                    const item = document.createElement('div');
-                    item.className = 'note-item';
-                    item.innerHTML = `
-                        <input type="text" placeholder="名前 (例: TD_ESC)" value="${note.name}" 
-                               data-id="${note.id}" data-field="name"
-                               oninput="updateNote('${type}', ${note.id}, 'name', this.value)">
-                        <input type="text" placeholder="説明" value="${note.description}"
-                               data-id="${note.id}" data-field="description"
-                               oninput="updateNote('${type}', ${note.id}, 'description', this.value)">
-                        <button class="delete-note" onclick="deleteNote('${type}', ${note.id})">×</button>
-                    `;
-                    container.appendChild(item);
-                });
+            if (!container) return;
+            
+            // 現在の入力フォーカスを失わないための工夫は省略し、
+            // シンプルに再描画（入力はoninputで処理されるためUXは維持）
+            container.innerHTML = '';
+            
+            notes[type].forEach(note => {
+                const item = document.createElement('div');
+                item.className = 'note-item';
+                item.innerHTML = `
+                    <input type="text" placeholder="名前 (例: TD_ESC)" value="${note.name}" 
+                           oninput="updateNote('${type}', ${note.id}, 'name', this.value)">
+                    <input type="text" placeholder="説明" value="${note.description}"
+                           oninput="updateNote('${type}', ${note.id}, 'description', this.value)">
+                    <button class="delete-note" onclick="deleteNote('${type}', ${note.id})">×</button>
+                `;
+                container.appendChild(item);
             });
         }
 
@@ -2220,8 +2176,6 @@ ${layers.map((l, i) => `    _${l.name.toUpperCase().replace(/[^A-Z0-9]/g, '_')} 
                     let kc = '';
                     if (encoderKeys[id]) {
                         // エンコーダーキーがkeymap配列に含まれる場合、通常はPushのコードを出力する
-                        // (ロータリーエンコーダーの回転はencoder_update_user等で処理されるが、
-                        // 行列上のスイッチとして振る舞う場合はPushのコードが必要)
                         kc = encoderKeys[id].push || 'KC_NO';
                     } else {
                         kc = layer.keys[id] || 'KC_NO';
@@ -2248,14 +2202,10 @@ ${layers.map((l, i) => `    _${l.name.toUpperCase().replace(/[^A-Z0-9]/g, '_')} 
 #if defined(ENCODER_MAP_ENABLE)
 const uint16_t PROGMEM encoder_map[][NUM_ENCODERS][2] = {
 `;
-            // 簡易的なエンコーダーマップ出力生成（インデックス順序は仮定）
             layers.forEach((layer, layerIndex) => {
                 const layerNameClean = layer.name.toUpperCase().replace(/[^A-Z0-9]/g, '_');
                 output += `    [_${layerNameClean}] = {`;
                 
-                // layoutDataの中からエンコーダーを探し、定義順に並べる必要があるが、
-                // ここでは簡易的にid順でエンコーダー設定があるものを抽出
-                // ※実際にはkeyboard.jsonのencoder定義順が必要だが、ここでは推測で出力
                 const encoders = layoutData.filter(k => encoderKeys[k.id]);
                 
                 encoders.forEach((enc, idx) => {

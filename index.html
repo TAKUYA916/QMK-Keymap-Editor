@@ -647,7 +647,13 @@
                 <h3>🔧 キー設定 <span id="selectedKeyId" style="font-size: 0.9em; color: #aaa;"></span></h3>
                 <div class="key-input-group">
                     <label>キーコード:</label>
-                    <input type="text" id="keycodeInput" placeholder="KC_A" oninput="updateKeycode(this.value)">
+                    <div style="display: flex; gap: 8px; align-items: center;">
+                        <input type="text" id="keycodeInput" placeholder="KC_A" oninput="updateKeycode(this.value)" style="flex: 1;">
+                        <button id="captureKeyBtn" class="btn btn-secondary" onclick="startKeyCapture()" title="キー入力からコードを設定" style="padding: 8px 12px;">⌨️</button>
+                    </div>
+                     <div id="captureStatus" style="display:none; color: #00ff88; font-size: 0.85em; margin-top: 5px; background: rgba(0, 255, 136, 0.1); padding: 5px; border-radius: 4px;">
+                        キーを入力してください... (Escでキャンセル)
+                    </div>
                 </div>
                 <div class="key-input-group">
                     <label>カテゴリー選択:</label>
@@ -2693,10 +2699,132 @@ const uint16_t PROGMEM encoder_map[][NUM_ENCODERS][2] = {
         const kbContainer = document.getElementById('keyboardContainer');
         if (kbContainer) {
             kbContainer.onclick = (e) => {
-                if (e.target === kbContainer) {
-                    selectKey(null);
+                // キー要素、エンコーダーUI、またはその内部がクリックされた場合は何もしない
+                if (e.target.closest('.key') || e.target.closest('.encoder-side-box')) {
+                    return;
                 }
+                // それ以外（コンテナの背景など）なら選択解除
+                selectKey(null);
             };
+        }
+
+        // ==================== KEY CAPTURE LOGIC ====================
+        let isCapturingKey = false;
+
+        // 基本的なキーコードマップ
+        const keycodeMap = {
+            'KeyA': 'KC_A', 'KeyB': 'KC_B', 'KeyC': 'KC_C', 'KeyD': 'KC_D', 'KeyE': 'KC_E',
+            'KeyF': 'KC_F', 'KeyG': 'KC_G', 'KeyH': 'KC_H', 'KeyI': 'KC_I', 'KeyJ': 'KC_J',
+            'KeyK': 'KC_K', 'KeyL': 'KC_L', 'KeyM': 'KC_M', 'KeyN': 'KC_N', 'KeyO': 'KC_O',
+            'KeyP': 'KC_P', 'KeyQ': 'KC_Q', 'KeyR': 'KC_R', 'KeyS': 'KC_S', 'KeyT': 'KC_T',
+            'KeyU': 'KC_U', 'KeyV': 'KC_V', 'KeyW': 'KC_W', 'KeyX': 'KC_X', 'KeyY': 'KC_Y', 'KeyZ': 'KC_Z',
+            'Digit1': 'KC_1', 'Digit2': 'KC_2', 'Digit3': 'KC_3', 'Digit4': 'KC_4', 'Digit5': 'KC_5',
+            'Digit6': 'KC_6', 'Digit7': 'KC_7', 'Digit8': 'KC_8', 'Digit9': 'KC_9', 'Digit0': 'KC_0',
+            'Enter': 'KC_ENT', 'Escape': 'KC_ESC', 'Backspace': 'KC_BSPC', 'Tab': 'KC_TAB', 'Space': 'KC_SPC',
+            'Minus': 'KC_MINS', 'Equal': 'KC_EQL', 'BracketLeft': 'KC_LBRC', 'BracketRight': 'KC_RBRC',
+            'Backslash': 'KC_BSLS', 'Semicolon': 'KC_SCLN', 'Quote': 'KC_QUOT', 'Backquote': 'KC_GRV',
+            'Comma': 'KC_COMM', 'Period': 'KC_DOT', 'Slash': 'KC_SLSH',
+            'F1': 'KC_F1', 'F2': 'KC_F2', 'F3': 'KC_F3', 'F4': 'KC_F4', 'F5': 'KC_F5', 'F6': 'KC_F6',
+            'F7': 'KC_F7', 'F8': 'KC_F8', 'F9': 'KC_F9', 'F10': 'KC_F10', 'F11': 'KC_F11', 'F12': 'KC_F12',
+            'PrintScreen': 'KC_PSCR', 'ScrollLock': 'KC_SCRL', 'Pause': 'KC_PAUS', 'Insert': 'KC_INS',
+            'Home': 'KC_HOME', 'PageUp': 'KC_PGUP', 'Delete': 'KC_DEL', 'End': 'KC_END', 'PageDown': 'KC_PGDN',
+            'ArrowRight': 'KC_RGHT', 'ArrowLeft': 'KC_LEFT', 'ArrowDown': 'KC_DOWN', 'ArrowUp': 'KC_UP',
+            'NumLock': 'KC_NUM', 'NumpadDivide': 'KC_PSLS', 'NumpadMultiply': 'KC_PAST', 'NumpadSubtract': 'KC_PMNS',
+            'NumpadAdd': 'KC_PPLS', 'NumpadEnter': 'KC_PENT', 'NumpadDecimal': 'KC_PDOT',
+            'Numpad0': 'KC_P0', 'Numpad1': 'KC_P1', 'Numpad2': 'KC_P2', 'Numpad3': 'KC_P3', 'Numpad4': 'KC_P4',
+            'Numpad5': 'KC_P5', 'Numpad6': 'KC_P6', 'Numpad7': 'KC_P7', 'Numpad8': 'KC_P8', 'Numpad9': 'KC_P9'
+        };
+
+        function startKeyCapture() {
+            if (isCapturingKey) {
+                stopKeyCapture();
+                return;
+            }
+
+            isCapturingKey = true;
+            document.getElementById('captureStatus').style.display = 'block';
+            document.getElementById('captureKeyBtn').classList.add('active');
+            document.getElementById('captureKeyBtn').style.background = 'rgba(0, 255, 136, 0.3)';
+
+            // フォーカスを外す（入力欄に入力されるのを防ぐため）
+            document.activeElement.blur();
+
+            window.addEventListener('keydown', handleKeyCapture, true);
+        }
+
+        function stopKeyCapture() {
+            isCapturingKey = false;
+            document.getElementById('captureStatus').style.display = 'none';
+            document.getElementById('captureKeyBtn').classList.remove('active');
+            document.getElementById('captureKeyBtn').style.background = '';
+            window.removeEventListener('keydown', handleKeyCapture, true);
+        }
+
+        function handleKeyCapture(e) {
+            if (!isCapturingKey) return;
+
+            e.preventDefault();
+            e.stopPropagation();
+
+            // 修飾キーのみの場合は無視（組み合わせ待機）
+            if (['Control', 'Shift', 'Alt', 'Meta'].includes(e.key)) {
+                return;
+            }
+
+            // Escでキャンセル
+            if (e.code === 'Escape' && !e.ctrlKey && !e.shiftKey && !e.altKey && !e.metaKey) {
+                stopKeyCapture();
+                return;
+            }
+
+            let baseCode = keycodeMap[e.code] || '';
+
+            // マップにない場合、keyプロパティから推測
+            if (!baseCode) {
+                // アルファベット1文字ならKC_X
+                if (/^[a-zA-Z]$/.test(e.key)) {
+                    baseCode = 'KC_' + e.key.toUpperCase();
+                } else if (/^[0-9]$/.test(e.key)) {
+                    baseCode = 'KC_' + e.key;
+                }
+            }
+
+            if (!baseCode) {
+                // 対応できないキー
+                alert(`このキー(${e.code})は自動認識できませんでした。手動で入力してください。`);
+                stopKeyCapture();
+                return;
+            }
+
+            // 修飾キーの処理
+            let finalCode = baseCode;
+            let mods = [];
+
+            if (e.ctrlKey) mods.push('C');
+            if (e.shiftKey) mods.push('S');
+            if (e.altKey) mods.push('A');
+            if (e.metaKey) mods.push('G'); // GUI/Win/Cmd
+
+            if (mods.length > 0) {
+                // QMKの修飾キー構文: C(KC_A), S(C(KC_A)) ... とネストするか、エイリアスを使うか
+                // ここではシンプルに C(S(KC_A)) のように再帰的に包むか、
+                // もしくはモディファイアを並べる。QMKは一般的に MOD(MOD(KC)) の形
+                // ただし、よく使う形として LCTL(KC), RCTL(KC) などがあるが、
+                // 左/右の区別は JSの e.ctrlKey からは厳密には e.location で判定可能だが、
+                // 一般的なショートカットとしては左右を区別しないことが多い。
+                // QMKのエイリアス機能(C(), S(), A(), G())を使うのが無難。
+
+                // 複数ある場合は順に包む
+                mods.forEach(mod => {
+                    finalCode = `${mod}(${finalCode})`;
+                });
+            }
+
+            // 入力欄にセットして更新
+            document.getElementById('keycodeInput').value = finalCode;
+            updateKeycode(finalCode);
+
+            stopKeyCapture();
         }
     </script>
 </body>

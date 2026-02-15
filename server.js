@@ -6,8 +6,7 @@ const app = express();
 // Google Cloud Storage configuration
 const storage = new Storage();
 // BUCKET_NAME will be set via environment variable or default
-const BUCKET_NAME = process.env.BUCKET_NAME || 'qmk-map-storage';
-
+const BUCKET_NAME = process.env.BUCKET_NAME || 'qmk-keymap-editor-storage'
 // 起動時にバケット名をログ出力
 console.log(`[STARTUP] Using GCS Bucket: ${BUCKET_NAME}`);
 console.log(`[STARTUP] Environment: ${process.env.NODE_ENV || 'development'}`);

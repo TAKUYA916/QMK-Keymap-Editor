@@ -1081,6 +1081,7 @@
         let keyFont = "'Segoe UI', sans-serif";
         const MAX_LAYERS = 16;
         const BASE_SCALE = 58; // 基準スケール
+        let isCapturingKey = false; // キー入力キャプチャ状態フラグ
 
         // Gist設定
         let gistToken = localStorage.getItem('gist-token') || '';
@@ -1490,18 +1491,22 @@
             // [NAME] = LAYOUT...( ... ) の形式を探す
             // LAYOUTマクロがなくても対応できるよう、[NAME] = ... ( ... ) にマッチさせるが、
             // 偽陽性を防ぐため、keymapBlockの中だけ、あるいは特定のキーワード(LAYER_)を優先するなどの工夫が必要
-            const layerRegex = /\[(\w+)\]\s*=\s*[A-Z0-9_]*LAYOUT[A-Z0-9_]*\s*\(([\s\S]*?)\)(?=\s*,?\s*(?:\[|};|\)))/g;
+            // Fix: targetContentは }; を含まないため、末尾($)も許容する
+            const layerRegex = /\[(\w+)\]\s*=\s*[A-Z0-9_]*LAYOUT[A-Z0-9_]*\s*\(([\s\S]*?)\)(?=\s*,?\s*(?:\[|};|\)|$))/g;
             let matches = [...targetContent.matchAll(layerRegex)];
 
             if (matches.length === 0) {
                 // LAYOUTマクロがない場合、もう少し緩い条件で探す (ただし[] = ... ( ... ) の形式)
-                const fallbackLayerRegex = /\[(LAYER_\w+|\d+)\]\s*=\s*\w+\s*\(([\s\S]*?)\)(?=\s*,?\s*(?:\[|};|\)))/g;
+                const fallbackLayerRegex = /\[(LAYER_\w+|\d+)\]\s*=\s*\w+\s*\(([\s\S]*?)\)(?=\s*,?\s*(?:\[|};|\)|$))/g;
                 matches = [...targetContent.matchAll(fallbackLayerRegex)];
             }
 
             if (matches.length === 0) {
                 throw new Error('レイヤー定義が見つかりませんでした。keymap.cの形式を確認してください。');
             }
+
+            console.log(`Debug: Found ${matches.length} layers via regex matches.`);
+            // alert(`デバッグ: レイヤー定義を ${matches.length} 件検出しました`);
 
             const newLayers = [];
             matches.forEach((match) => {
@@ -2215,17 +2220,22 @@
 
         // ==================== LOCAL STORAGE ====================
         function saveToLocal() {
-            const data = {
-                layoutData,
-                layoutName,
-                layers,
-                keyColors,
-                individualKeyColors,
-                encoderKeys,
-                notes
-            };
-            localStorage.setItem('qmk-keymap-editor', JSON.stringify(data));
-            alert('保存しました！');
+            try {
+                const data = {
+                    layoutData,
+                    layoutName,
+                    layers,
+                    keyColors,
+                    individualKeyColors,
+                    encoderKeys,
+                    notes
+                };
+                localStorage.setItem('qmk-keymap-editor', JSON.stringify(data));
+                alert('保存しました！ (localStorage)');
+            } catch (e) {
+                console.error('Local Save Error:', e);
+                alert(`保存に失敗しました: ${e.message}\n(容量制限やブラウザの設定を確認してください)`);
+            }
         }
 
         function loadFromLocal() {
@@ -2695,23 +2705,33 @@ const uint16_t PROGMEM encoder_map[][NUM_ENCODERS][2] = {
         renderNotes('combo');
         renderNotes('macro');
 
-        // キーボード以外のエリア（コンテナ）をクリックした際に選択解除
-        const kbContainer = document.getElementById('keyboardContainer');
-        if (kbContainer) {
-            kbContainer.onclick = (e) => {
-                // キー要素、エンコーダーUI、またはその内部がクリックされた場合は何もしない
-                if (e.target.closest('.key') || e.target.closest('.encoder-side-box')) {
-                    return;
-                }
-                // それ以外（コンテナの背景など）なら選択解除
+        // クリックによる選択解除ロジック（画面全体を対象）
+        document.addEventListener('click', (e) => {
+            // 以下の要素内をクリックした場合は選択解除しない（編集作業の継続）
+            if (
+                e.target.closest('.key') ||
+                e.target.closest('.editor-panel') ||
+                e.target.closest('.encoder-side-box') ||
+                e.target.closest('.keycode-quick') ||
+                e.target.closest('#captureKeyBtn') // キャプチャボタン
+            ) {
+                return;
+            }
+
+            // キーキャプチャ中は解除しない
+            if (typeof isCapturingKey !== 'undefined' && isCapturingKey) return;
+
+            // それ以外（背景など）をクリックし、かつキーが選択されている場合は解除
+            if (selectedKey !== null) {
                 selectKey(null);
-            };
-        }
+            }
+        });
 
         // ==================== KEY CAPTURE LOGIC ====================
-        let isCapturingKey = false;
 
-        // 基本的なキーコードマップ
+        let pressedNonModifier = false; // 修飾キー以外のキーが押されたか
+
+        // 基本的なキーコードマップ (Winキーなどを追加)
         const keycodeMap = {
             'KeyA': 'KC_A', 'KeyB': 'KC_B', 'KeyC': 'KC_C', 'KeyD': 'KC_D', 'KeyE': 'KC_E',
             'KeyF': 'KC_F', 'KeyG': 'KC_G', 'KeyH': 'KC_H', 'KeyI': 'KC_I', 'KeyJ': 'KC_J',
@@ -2732,7 +2752,12 @@ const uint16_t PROGMEM encoder_map[][NUM_ENCODERS][2] = {
             'NumLock': 'KC_NUM', 'NumpadDivide': 'KC_PSLS', 'NumpadMultiply': 'KC_PAST', 'NumpadSubtract': 'KC_PMNS',
             'NumpadAdd': 'KC_PPLS', 'NumpadEnter': 'KC_PENT', 'NumpadDecimal': 'KC_PDOT',
             'Numpad0': 'KC_P0', 'Numpad1': 'KC_P1', 'Numpad2': 'KC_P2', 'Numpad3': 'KC_P3', 'Numpad4': 'KC_P4',
-            'Numpad5': 'KC_P5', 'Numpad6': 'KC_P6', 'Numpad7': 'KC_P7', 'Numpad8': 'KC_P8', 'Numpad9': 'KC_P9'
+            'Numpad5': 'KC_P5', 'Numpad6': 'KC_P6', 'Numpad7': 'KC_P7', 'Numpad8': 'KC_P8', 'Numpad9': 'KC_P9',
+            // Modifiers
+            'ControlLeft': 'KC_LCTL', 'ControlRight': 'KC_RCTL',
+            'ShiftLeft': 'KC_LSFT', 'ShiftRight': 'KC_RSFT',
+            'AltLeft': 'KC_LALT', 'AltRight': 'KC_RALT',
+            'MetaLeft': 'KC_LGUI', 'MetaRight': 'KC_RGUI'
         };
 
         function startKeyCapture() {
@@ -2741,90 +2766,146 @@ const uint16_t PROGMEM encoder_map[][NUM_ENCODERS][2] = {
                 return;
             }
 
+            // Windowsキーのロックを試みる
+            if ('keyboard' in navigator && 'lock' in navigator.keyboard) {
+                navigator.keyboard.lock(['MetaLeft', 'MetaRight']).catch((e) => {
+                    console.warn('Windowsキーのロックに失敗しました:', e);
+                });
+            }
+
             isCapturingKey = true;
-            document.getElementById('captureStatus').style.display = 'block';
-            document.getElementById('captureKeyBtn').classList.add('active');
-            document.getElementById('captureKeyBtn').style.background = 'rgba(0, 255, 136, 0.3)';
+            pressedNonModifier = false;
 
-            // フォーカスを外す（入力欄に入力されるのを防ぐため）
-            document.activeElement.blur();
+            const statusEl = document.getElementById('captureStatus');
+            const btnEl = document.getElementById('captureKeyBtn');
 
-            window.addEventListener('keydown', handleKeyCapture, true);
+            if (statusEl && btnEl) {
+                statusEl.style.display = 'block';
+                statusEl.textContent = 'キーを入力してください... (Escでキャンセル)';
+                btnEl.classList.add('active');
+                btnEl.style.background = 'rgba(0, 255, 136, 0.3)';
+            }
+
+            if (document.activeElement) document.activeElement.blur();
+
+            setTimeout(() => {
+                window.addEventListener('keydown', handleKeyCaptureDown, true);
+                window.addEventListener('keyup', handleKeyCaptureUp, true);
+            }, 50);
         }
 
         function stopKeyCapture() {
+            // キーロック解除
+            if ('keyboard' in navigator && 'unlock' in navigator.keyboard) {
+                navigator.keyboard.unlock();
+            }
+
             isCapturingKey = false;
-            document.getElementById('captureStatus').style.display = 'none';
-            document.getElementById('captureKeyBtn').classList.remove('active');
-            document.getElementById('captureKeyBtn').style.background = '';
-            window.removeEventListener('keydown', handleKeyCapture, true);
+            const statusEl = document.getElementById('captureStatus');
+            const btnEl = document.getElementById('captureKeyBtn');
+
+            if (statusEl) statusEl.style.display = 'none';
+            if (btnEl) {
+                btnEl.classList.remove('active');
+                btnEl.style.background = '';
+            }
+
+            window.removeEventListener('keydown', handleKeyCaptureDown, true);
+            window.removeEventListener('keyup', handleKeyCaptureUp, true);
         }
 
-        function handleKeyCapture(e) {
+        function handleKeyCaptureDown(e) {
             if (!isCapturingKey) return;
-
             e.preventDefault();
             e.stopPropagation();
 
-            // 修飾キーのみの場合は無視（組み合わせ待機）
-            if (['Control', 'Shift', 'Alt', 'Meta'].includes(e.key)) {
-                return;
-            }
+            // Debug: ローカル検証用
+            // alert(`Key Down: ${e.code}`);
 
-            // Escでキャンセル
-            if (e.code === 'Escape' && !e.ctrlKey && !e.shiftKey && !e.altKey && !e.metaKey) {
+            const isMod = ['Control', 'Shift', 'Alt', 'Meta'].includes(e.key);
+
+            if (e.code === 'Escape' && !isMod) {
                 stopKeyCapture();
                 return;
             }
 
+            if (!isMod) {
+                pressedNonModifier = true;
+                // 修飾キー + 通常キーのコンボ確定
+                finalizeKeyCapture(e);
+            }
+            // 修飾キーのみの場合は、他のキーが押されるか、KeyUpで離されるのを待つ
+        }
+
+        function handleKeyCaptureUp(e) {
+            if (!isCapturingKey) return;
+            e.preventDefault();
+            e.stopPropagation();
+
+            const isMod = ['Control', 'Shift', 'Alt', 'Meta'].includes(e.key);
+
+            // 修飾キーが離された、かつ、まだ通常のキーが押されていない場合 -> 修飾キー単体として登録
+            if (isMod && !pressedNonModifier) {
+                finalizeKeyCapture(e);
+            }
+        }
+
+        function finalizeKeyCapture(e) {
             let baseCode = keycodeMap[e.code] || '';
 
-            // マップにない場合、keyプロパティから推測
             if (!baseCode) {
-                // アルファベット1文字ならKC_X
-                if (/^[a-zA-Z]$/.test(e.key)) {
-                    baseCode = 'KC_' + e.key.toUpperCase();
-                } else if (/^[0-9]$/.test(e.key)) {
-                    baseCode = 'KC_' + e.key;
-                }
+                if (/^[a-zA-Z]$/.test(e.key)) baseCode = 'KC_' + e.key.toUpperCase();
+                else if (/^[0-9]$/.test(e.key)) baseCode = 'KC_' + e.key;
             }
 
             if (!baseCode) {
-                // 対応できないキー
-                alert(`このキー(${e.code})は自動認識できませんでした。手動で入力してください。`);
-                stopKeyCapture();
+                if (confirm(`キー "${e.code}" を自動認識できませんでした。\n手動入力しますか？`)) {
+                    stopKeyCapture();
+                    document.getElementById('keycodeInput').focus();
+                } else {
+                    stopKeyCapture();
+                }
                 return;
             }
 
-            // 修飾キーの処理
+            // コンボの構築
+            // 単体の修飾キー入力(KeyUp発火)の場合、e.ctrlKeyなどはfalseになっている可能性があるため、e.code自身の判定が必要
             let finalCode = baseCode;
             let mods = [];
 
-            if (e.ctrlKey) mods.push('C');
-            if (e.shiftKey) mods.push('S');
-            if (e.altKey) mods.push('A');
-            if (e.metaKey) mods.push('G'); // GUI/Win/Cmd
+            // 押されている修飾キーを確認 (現在のイベントが修飾キー単体の場合は、それ自体はModsに含めない)
+            const isSelfMod = ['Control', 'Shift', 'Alt', 'Meta'].includes(e.key);
+
+            if (!isSelfMod || pressedNonModifier) {
+                // コンボの場合、押されている修飾キーを付与
+                // 注意: KeyUpイベントの場合、e.ctrlKeyなどは「離された直後の状態」を示すため、falseかもしれない。
+                // ただし、finalizeKeyCaptureが呼ばれるのは：
+                // 1. KeyDown (通常キー) -> e.ctrlKey等は有効
+                // 2. KeyUp (修飾キー単体) -> e.ctrlKey等は無効だが、そもそもコンボではないのでOK
+
+                if (e.ctrlKey) mods.push('C');
+                if (e.shiftKey) mods.push('S');
+                if (e.altKey) mods.push('A');
+                if (e.metaKey) mods.push('G');
+            }
 
             if (mods.length > 0) {
-                // QMKの修飾キー構文: C(KC_A), S(C(KC_A)) ... とネストするか、エイリアスを使うか
-                // ここではシンプルに C(S(KC_A)) のように再帰的に包むか、
-                // もしくはモディファイアを並べる。QMKは一般的に MOD(MOD(KC)) の形
-                // ただし、よく使う形として LCTL(KC), RCTL(KC) などがあるが、
-                // 左/右の区別は JSの e.ctrlKey からは厳密には e.location で判定可能だが、
-                // 一般的なショートカットとしては左右を区別しないことが多い。
-                // QMKのエイリアス機能(C(), S(), A(), G())を使うのが無難。
-
-                // 複数ある場合は順に包む
                 mods.forEach(mod => {
                     finalCode = `${mod}(${finalCode})`;
                 });
             }
 
-            // 入力欄にセットして更新
             document.getElementById('keycodeInput').value = finalCode;
             updateKeycode(finalCode);
-
             stopKeyCapture();
+
+            // 成功メッセージ
+            const statusEl = document.getElementById('captureStatus');
+            statusEl.style.display = 'block';
+            statusEl.textContent = `セット: ${finalCode}`;
+            setTimeout(() => {
+                if (!isCapturingKey) statusEl.style.display = 'none';
+            }, 1500);
         }
     </script>
 </body>
